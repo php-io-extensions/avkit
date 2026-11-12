@@ -1,6 +1,7 @@
 # avkit
 
 [![CI](https://img.shields.io/github/actions/workflow/status/php-io-extensions/avkit/ci.yml?style=flat-square&label=CI)](https://github.com/php-io-extensions/avkit/actions/workflows/ci.yml)
+[![AVFoundation API](https://img.shields.io/badge/AVFoundation_API-3.0%25_%2879%2F2658%29-blue?style=flat-square)](SUPPORT.md)
 
 1:1 PHP bindings of AVFoundation, AVKit, CoreMedia and CoreVideo, as classes and functions named after their native counterparts. Version 0.11.2. macOS only.
 
@@ -45,6 +46,19 @@ That builds into Homebrew `php@8.4` and `php@8.4-zts`, ad-hoc signs the `.so`, a
 | AVKit | `AVPlayerView extends NSView` (player (+set), controlsStyle (+set)), enum `AVPlayerViewControlsStyle` |
 | CoreMedia | `CMTime`, `CMTimeRange`, `CMVideoDimensions`, `AudioStreamBasicDescription` value classes; `CMSampleBuffer`, `CMBlockBuffer`, `CMFormatDescription`, `CMVideoFormatDescription`, `CMAudioFormatDescription`; `CMTimeMake`, `CMTimeMakeWithSeconds`, `CMTimeGetSeconds`, `CMTimeCompare`, `CMTimeRangeMake`, `CMTimeRangeGetEnd`, `CMSampleBufferGetImageBuffer`, `CMSampleBufferGetDataBuffer`, `CMSampleBufferGetFormatDescription`, `CMSampleBufferGetPresentationTimeStamp`, `CMSampleBufferGetDuration`, `CMSampleBufferGetNumSamples`, `CMBlockBufferGetDataLength`, `CMBlockBufferCopyDataBytes`, `CMFormatDescriptionGetMediaType`, `CMVideoFormatDescriptionGetDimensions`, `CMAudioFormatDescriptionGetStreamBasicDescription`; `kCMTimeFlags_*`, `kCMMediaType_Video`, `kCMMediaType_Audio` |
 | CoreVideo | `CVBuffer`, `CVImageBuffer`, `CVPixelBuffer`; `CVPixelBufferLockBaseAddress`, `CVPixelBufferUnlockBaseAddress`, `CVPixelBufferGetBaseAddress`, `CVPixelBufferGetBytesPerRow`, `CVPixelBufferGetWidth`, `CVPixelBufferGetHeight`, `CVPixelBufferGetPixelFormatType`, `CVPixelBufferGetDataSize`, `CVPixelBufferIsPlanar`, `CVPixelBufferGetPlaneCount` and the `…OfPlane` getters; `kCVPixelBufferLock_ReadOnly`, `kCVPixelFormatType_32BGRA`, `kCVPixelBufferPixelFormatTypeKey` |
+
+## Coverage
+
+[SUPPORT.md](SUPPORT.md) lists every method and property accessor that the SDK's AVFoundation,
+AVKit, CoreMedia and CoreVideo headers declare on a class or category, and their `AV`, `CM` and
+`CV` C functions, not deprecated or unavailable on macOS, each marked bound or not; protocol
+methods (delegates) are not counted. The API badge is computed from it. Regenerate both after a
+binding change, and check them:
+
+```bash
+php84 scripts/support.php           # writes SUPPORT.md and the badge
+php84 scripts/support.php --check   # exits 1 when either is stale
+```
 
 ## Example
 

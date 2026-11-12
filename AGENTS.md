@@ -13,5 +13,5 @@
 8. **Errors.** `NSError**` is a by-reference `?NSError &$error = null` in native position; nil is `null`. A CoreMedia or CoreVideo status is the returned `int`.
 9. **The stub is the declaration.** One stub per framework in `stubs/`, registered from the `.m` file of that framework (`AVKit.stub.php` from `src/AVPlayerView.m`: the volume is case-insensitive and `src/avkit.m` is the module). Edit `stubs/*.stub.php`, regenerate with `php84 /opt/homebrew/opt/php@8.4/lib/php/build/gen_stub.php stubs`, and commit both. Never hand-edit `*_arginfo.h`.
 10. **Build.** Install ext-appkit first, then `./install-macos.sh` into Homebrew `php@8.4` and `php@8.4-zts`. Pest at `-d memory_limit=128M` on both. Tests need a temporary `composer install`; remove `vendor/` and `composer.lock` after. Gate a commit on the suite's exit code. The test clip is base64 text (`tests/Fixtures/clip.mp4.b64`): the guard blocks binary writes into the repo.
-11. **Durable facts go in `.okf`.** Update the matching concept and append `.okf/log.md`.
+11. **Durable facts go in `.okf`.** Update the matching concept and append `.okf/log.md`. Run `php84 scripts/support.php` after a stub change: it rewrites `SUPPORT.md` and the README's API badge, and `tests/SupportTest.php` fails while either is stale.
 12. **Version** is `PHP_AVKIT_VERSION` in `php_avkit.h`: 0.11.2. macOS only.
