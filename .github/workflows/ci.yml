@@ -47,7 +47,9 @@ jobs:
           ./configure --enable-avkit
           make -j"$(sysctl -n hw.ncpu)"
 
+      # php -n reads no ini, so it looks in its compiled-in extension_dir, not the
+      # pecl dir Homebrew's make install uses: load appkit from its build path.
       - name: Load
         run: |
-          php -n -d extension=appkit -d extension="$PWD/modules/avkit.so" -r 'exit(extension_loaded("avkit") ? 0 : 1);'
-          php -n -d extension=appkit -d extension="$PWD/modules/avkit.so" --ri avkit
+          php -n -d extension="$PWD/appkit/modules/appkit.so" -d extension="$PWD/modules/avkit.so" -r 'exit(extension_loaded("avkit") ? 0 : 1);'
+          php -n -d extension="$PWD/appkit/modules/appkit.so" -d extension="$PWD/modules/avkit.so" --ri avkit
