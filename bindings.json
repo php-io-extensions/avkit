@@ -1,0 +1,15 @@
+{
+  "symbols": {},
+  "glue": {
+    "CMVideoDimensions": {"methods": ["__construct"], "forwards": "CoreMedia's anonymous-struct typedef CMVideoDimensions (CMFormatDescription.h), which the guard's index does not read"}
+  },
+  "helpers": {
+    "marshal": ["avkit_cmtime_from", "avkit_cmtimerange_from", "appkit_nsdictionary"],
+    "translate": ["appkit_throw_nsexception"]
+  },
+  "sites": {},
+  "typemap": {
+    "CMMediaType": ["int"],
+    "OSType": ["int"]
+  }
+}
