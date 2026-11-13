@@ -25,6 +25,8 @@
 extern zend_class_entry *avkit_ce_CMTime;
 extern zend_class_entry *avkit_ce_AVPlayerItemStatus;
 extern zend_class_entry *avkit_ce_AVPlayerItem;
+extern zend_class_entry *avkit_ce_AVPlayerItemOutput;
+extern zend_class_entry *avkit_ce_AVPlayerItemVideoOutput;
 extern zend_class_entry *avkit_ce_AVPlayerTimeControlStatus;
 extern zend_class_entry *avkit_ce_AVPlayerActionAtItemEnd;
 extern zend_class_entry *avkit_ce_AVPlayer;
@@ -53,6 +55,7 @@ extern zend_class_entry *avkit_ce_AVAssetReader;
 void avkit_register_CoreVideo(int module_number);
 void avkit_register_CoreMedia(int module_number);
 void avkit_register_AVFoundation(int module_number);
+void avkit_register_AVFAudio(int module_number);
 void avkit_register_AVKit(int module_number);
 
 /* Registers a CF type's class on its parent with appkit's object model; appkit_box_cf_as boxes it. */

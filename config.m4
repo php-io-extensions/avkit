@@ -30,7 +30,7 @@ if test "$PHP_AVKIT" != "no"; then
     AC_MSG_ERROR([avkit needs ext-appkit installed first: $avkit_appkit_inc/php_appkit_api.h not found])
   fi
 
-  AVKIT_SOURCES="src/avkit.m src/CoreVideo.m src/CoreMedia.m src/AVFoundation.m src/AVPlayerView.m"
+  AVKIT_SOURCES="src/avkit.m src/CoreVideo.m src/CoreMedia.m src/AVFoundation.m src/AVFAudio.m src/AVPlayerView.m"
 
   dnl No C sources: every translation unit is Objective-C, compiled by the rules below.
   PHP_NEW_EXTENSION([avkit], [], [$ext_shared],, [-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1])

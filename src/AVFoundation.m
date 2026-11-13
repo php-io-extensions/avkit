@@ -7,6 +7,8 @@ _Static_assert(AVPlayerActionAtItemEndAdvance == 0 && AVPlayerActionAtItemEndPau
 
 zend_class_entry *avkit_ce_AVPlayerItemStatus;
 zend_class_entry *avkit_ce_AVPlayerItem;
+zend_class_entry *avkit_ce_AVPlayerItemOutput;
+zend_class_entry *avkit_ce_AVPlayerItemVideoOutput;
 zend_class_entry *avkit_ce_AVPlayerTimeControlStatus;
 zend_class_entry *avkit_ce_AVPlayerActionAtItemEnd;
 zend_class_entry *avkit_ce_AVPlayer;
@@ -20,6 +22,8 @@ void avkit_register_AVFoundation(int module_number)
 	avkit_ce_AVPlayerActionAtItemEnd = register_class_AVPlayerActionAtItemEnd();
 
 	AVKIT_MAP(AVPlayerItem, appkit_ce_NSObject);
+	AVKIT_MAP(AVPlayerItemOutput, appkit_ce_NSObject);
+	AVKIT_MAP(AVPlayerItemVideoOutput, avkit_ce_AVPlayerItemOutput);
 	AVKIT_MAP(AVPlayer, appkit_ce_NSObject);
 
 	avkit_ce_AVAssetReaderStatus = register_class_AVAssetReaderStatus();
@@ -192,6 +196,86 @@ ANY_METHOD(AVPlayerItem, playerItemWithURL, PARSE_OBJ(appkit_ce_NSURL), appkit_b
 ANY_ENUM_GET(AVPlayerItem, AVPlayerItem, status, status, avkit_ce_AVPlayerItemStatus, false)
 ANY_METHOD(AVPlayerItem, duration, PARSE_NONE, avkit_cmtime_new(return_value, [SELF(AVPlayerItem) duration]);)
 ANY_OBJ_GET(AVPlayerItem, AVPlayerItem, error, error)
+ANY_METHOD(AVPlayerItem, outputs, PARSE_NONE, avkit_return_objects(return_value, [SELF(AVPlayerItem) outputs]);)
+ANY_OBJ_SET(AVPlayerItem, AVPlayerItem, addOutput, addOutput, avkit_ce_AVPlayerItemOutput, AVPlayerItemOutput *)
+ANY_OBJ_SET(AVPlayerItem, AVPlayerItem, removeOutput, removeOutput, avkit_ce_AVPlayerItemOutput, AVPlayerItemOutput *)
+
+/* AVPlayerItemOutput */
+ANY_METHOD(AVPlayerItemOutput, itemTimeForHostTime, PARSE_DOUBLE, avkit_cmtime_new(return_value, [SELF(AVPlayerItemOutput) itemTimeForHostTime:(CFTimeInterval) v]);)
+ANY_METHOD(AVPlayerItemOutput, itemTimeForMachAbsoluteTime, PARSE_LONG, avkit_cmtime_new(return_value, [SELF(AVPlayerItemOutput) itemTimeForMachAbsoluteTime:(int64_t) v]);)
+ANY_BOOL_GET(AVPlayerItemOutput, AVPlayerItemOutput, suppressesPlayerRendering, suppressesPlayerRendering)
+ANY_BOOL_SET(AVPlayerItemOutput, AVPlayerItemOutput, setSuppressesPlayerRendering, setSuppressesPlayerRendering)
+
+/* AVPlayerItemVideoOutput */
+static void avkit_video_output_init(INTERNAL_FUNCTION_PARAMETERS, bool settings)
+{
+	HashTable *options = NULL;
+
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_ARRAY_HT_OR_NULL(options)
+	ZEND_PARSE_PARAMETERS_END();
+
+	APPKIT_BEGIN
+		NSDictionary *dictionary = nil;
+
+		if (options != NULL && (dictionary = appkit_nsdictionary(options, 1)) == nil) {
+			RETURN_THROWS();
+		}
+		AVPlayerItemVideoOutput *made = settings
+			? [[CALLED alloc] initWithOutputSettings:dictionary]
+			: [[CALLED alloc] initWithPixelBufferAttributes:dictionary];
+		appkit_box_objc(return_value, made);
+		[made release];
+	APPKIT_END
+}
+ZEND_METHOD(AVPlayerItemVideoOutput, initWithPixelBufferAttributes) { avkit_video_output_init(INTERNAL_FUNCTION_PARAM_PASSTHRU, false); }
+ZEND_METHOD(AVPlayerItemVideoOutput, initWithOutputSettings) { avkit_video_output_init(INTERNAL_FUNCTION_PARAM_PASSTHRU, true); }
+ZEND_METHOD(AVPlayerItemVideoOutput, hasNewPixelBufferForItemTime)
+{
+	zend_object *time;
+	CMTime value;
+
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_OBJ_OF_CLASS(time, avkit_ce_CMTime)
+	ZEND_PARSE_PARAMETERS_END();
+	if (!avkit_cmtime_from(time, 1, &value)) {
+		RETURN_THROWS();
+	}
+
+	APPKIT_BEGIN
+		RETVAL_BOOL([SELF(AVPlayerItemVideoOutput) hasNewPixelBufferForItemTime:value]);
+	APPKIT_END
+}
+ZEND_METHOD(AVPlayerItemVideoOutput, copyPixelBufferForItemTimeItemTimeForDisplay)
+{
+	zend_object *time;
+	zval *display_ref = NULL;
+	CMTime value;
+
+	ZEND_PARSE_PARAMETERS_START(1, 2)
+		Z_PARAM_OBJ_OF_CLASS(time, avkit_ce_CMTime)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ZVAL(display_ref)
+	ZEND_PARSE_PARAMETERS_END();
+	if (!avkit_cmtime_from(time, 1, &value)) {
+		RETURN_THROWS();
+	}
+
+	APPKIT_BEGIN
+		CMTime display = kCMTimeInvalid;
+		CVPixelBufferRef pixels = [SELF(AVPlayerItemVideoOutput) copyPixelBufferForItemTime:value itemTimeForDisplay:&display];
+
+		avkit_box_image_buffer(return_value, pixels);
+		if (pixels != NULL) {
+			CFRelease(pixels);
+		}
+		if (display_ref != NULL) {
+			zval boxed;
+			avkit_cmtime_new(&boxed, display);
+			ZEND_TRY_ASSIGN_REF_TMP(display_ref, &boxed);
+		}
+	APPKIT_END
+}
 
 /* AVPlayer */
 ANY_METHOD(AVPlayer, playerWithPlayerItem, PARSE_OBJ_OR_NULL(avkit_ce_AVPlayerItem), appkit_box_objc(return_value, [CALLED playerWithPlayerItem:(AVPlayerItem *) OPTIONAL_ID(v)]);)
@@ -218,6 +302,8 @@ ZEND_METHOD(AVPlayer, seekToTime)
 }
 ANY_BOOL_GET(AVPlayer, AVPlayer, isMuted, isMuted)
 ANY_BOOL_SET(AVPlayer, AVPlayer, setMuted, setMuted)
+ANY_DOUBLE_GET(AVPlayer, AVPlayer, volume, volume)
+ANY_METHOD(AVPlayer, setVolume, PARSE_DOUBLE, [SELF(AVPlayer) setVolume:(float) v];)
 ANY_ENUM_GET(AVPlayer, AVPlayer, timeControlStatus, timeControlStatus, avkit_ce_AVPlayerTimeControlStatus, false)
 ANY_ENUM_GET(AVPlayer, AVPlayer, actionAtItemEnd, actionAtItemEnd, avkit_ce_AVPlayerActionAtItemEnd, false)
 ANY_ENUM_SET(AVPlayer, AVPlayer, setActionAtItemEnd, setActionAtItemEnd, avkit_ce_AVPlayerActionAtItemEnd, AVPlayerActionAtItemEnd)

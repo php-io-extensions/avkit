@@ -55,6 +55,72 @@ function readerFor(string $mediaType, ?array $settings): array
     return [$reader, $output];
 }
 
+const PROBE_SIGSEGV = 11;
+
+const PROBE_SIGBUS = 10;
+
+function requireProbeBuild(): void
+{
+    if (! defined('AVKIT_PROBES')) {
+        test()->markTestSkipped('ext-avkit is not a probe build (AVKIT_CONFIGURE=--enable-avkit-probes ./install-macos.sh): AVKIT_PROBES is undefined');
+    }
+}
+
+/** An extension's .so: env AVKIT_PROBE_<NAME>, else the loaded PHP's extension_dir. */
+function probeExtension(string $name): string
+{
+    $given = getenv('AVKIT_PROBE_'.strtoupper($name));
+
+    return is_string($given) && $given !== '' ? $given : ini_get('extension_dir').'/'.$name.'.so';
+}
+
+/**
+ * Runs $code in a child of this PHP with only appkit and the probe build of avkit loaded.
+ * $siteOff names the kept site AVKIT_PROBE_OFF turns off; null keeps every site.
+ *
+ * @return array{signal: ?int, exit: ?int, stdout: string, stderr: string}
+ */
+function probeRun(string $code, ?string $siteOff): array
+{
+    $script = tempnam(sys_get_temp_dir(), 'avkit-probe').'.php';
+    $out = tempnam(sys_get_temp_dir(), 'avkit-probe-out');
+    $err = tempnam(sys_get_temp_dir(), 'avkit-probe-err');
+    file_put_contents($script, "<?php\ndeclare(strict_types=1);\ntry {\n".$code
+        ."\n} catch (Throwable \$t) {\n    echo 'REFUSED ', get_class(\$t), ': ', \$t->getMessage(), \"\\n\";\n}\necho \"SURVIVED\\n\";\n");
+
+    $env = getenv();
+    unset($env['AVKIT_PROBE_OFF']);
+    $env['XDEBUG_MODE'] = 'off';
+    if ($siteOff !== null) {
+        $env['AVKIT_PROBE_OFF'] = $siteOff;
+    }
+    $command = [PHP_BINARY, '-n', '-d', 'memory_limit=128M', '-d', 'extension='.probeExtension('appkit'), '-d', 'extension='.probeExtension('avkit'), $script];
+    $process = proc_open($command, [0 => ['file', '/dev/null', 'r'], 1 => ['file', $out, 'w'], 2 => ['file', $err, 'w']], $pipes, null, $env);
+    $deadline = microtime(true) + 30.0;
+    do {
+        $status = proc_get_status($process);
+        if ($status['running'] && microtime(true) > $deadline) {
+            proc_terminate($process, 9);
+        }
+        if ($status['running']) {
+            usleep(20_000);
+        }
+    } while ($status['running']);
+    proc_close($process);
+
+    $result = [
+        'signal' => $status['signaled'] ? $status['termsig'] : null,
+        'exit' => $status['signaled'] ? null : $status['exitcode'],
+        'stdout' => (string) file_get_contents($out),
+        'stderr' => (string) file_get_contents($err),
+    ];
+    @unlink($script);
+    @unlink($out);
+    @unlink($err);
+
+    return $result;
+}
+
 /** Runs the main run loop until $until answers true or $seconds pass. */
 function pumpUntil(NSApplication $app, callable $until, float $seconds): bool
 {

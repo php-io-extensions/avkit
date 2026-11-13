@@ -18,6 +18,7 @@ PHP_MINIT_FUNCTION(avkit)
 	avkit_register_CoreVideo(module_number);
 	avkit_register_CoreMedia(module_number);
 	avkit_register_AVFoundation(module_number);
+	avkit_register_AVFAudio(module_number);
 	avkit_register_AVKit(module_number);
 	return SUCCESS;
 }

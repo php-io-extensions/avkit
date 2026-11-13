@@ -1,7 +1,7 @@
 {
     "name": "php-io-extensions/avkit",
     "type": "php-ext",
-    "description": "1:1 PHP bindings of AVFoundation, AVKit, CoreMedia and CoreVideo, as classes and functions named after their native counterparts",
+    "description": "1:1 PHP bindings of AVFoundation, AVFAudio, AVKit, CoreMedia and CoreVideo, as classes and functions named after their native counterparts",
     "keywords": [
         "avfoundation",
         "avkit",

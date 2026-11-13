@@ -69,6 +69,30 @@ const AVLinearPCMIsNonInterleaved = UNKNOWN;
 const kAudioFormatLinearPCM = UNKNOWN;
 
 /**
+ * @var int
+ * @cvalue kAudioFormatFlagIsFloat
+ */
+const kAudioFormatFlagIsFloat = UNKNOWN;
+
+/**
+ * @var int
+ * @cvalue kAudioFormatFlagIsSignedInteger
+ */
+const kAudioFormatFlagIsSignedInteger = UNKNOWN;
+
+/**
+ * @var int
+ * @cvalue kAudioFormatFlagIsPacked
+ */
+const kAudioFormatFlagIsPacked = UNKNOWN;
+
+/**
+ * @var int
+ * @cvalue kAudioFormatFlagIsNonInterleaved
+ */
+const kAudioFormatFlagIsNonInterleaved = UNKNOWN;
+
+/**
  * @not-serializable
  */
 class AVAsset extends NSObject
@@ -192,6 +216,44 @@ class AVPlayerItem extends NSObject
 
     /** The NSError when status is FAILED. */
     public function error(): ?NSError {}
+
+    /** @return AVPlayerItemOutput[] */
+    public function outputs(): array {}
+
+    public function addOutput(AVPlayerItemOutput $output): void {}
+
+    public function removeOutput(AVPlayerItemOutput $output): void {}
+}
+
+/**
+ * @not-serializable
+ */
+class AVPlayerItemOutput extends NSObject
+{
+    public function itemTimeForHostTime(float $hostTimeInSeconds): CMTime {}
+
+    public function itemTimeForMachAbsoluteTime(int $machAbsoluteTime): CMTime {}
+
+    public function suppressesPlayerRendering(): bool {}
+
+    public function setSuppressesPlayerRendering(bool $suppressesPlayerRendering): void {}
+}
+
+/**
+ * @not-serializable
+ */
+class AVPlayerItemVideoOutput extends AVPlayerItemOutput
+{
+    /** $pixelBufferAttributes is an NSDictionary: string keys, string, int, float, bool or NSObject values. */
+    public static function initWithPixelBufferAttributes(?array $pixelBufferAttributes): static {}
+
+    /** $outputSettings is an NSDictionary: string keys, string, int, float, bool or NSObject values. */
+    public static function initWithOutputSettings(?array $outputSettings): static {}
+
+    public function hasNewPixelBufferForItemTime(CMTime $itemTime): bool {}
+
+    /** $outItemTimeForDisplay becomes the time the returned picture is for. */
+    public function copyPixelBufferForItemTimeItemTimeForDisplay(CMTime $itemTime, ?CMTime &$outItemTimeForDisplay = null): ?CVPixelBuffer {}
 }
 
 enum AVPlayerTimeControlStatus: int
@@ -230,6 +292,10 @@ class AVPlayer extends NSObject
     public function isMuted(): bool {}
 
     public function setMuted(bool $muted): void {}
+
+    public function volume(): float {}
+
+    public function setVolume(float $volume): void {}
 
     public function timeControlStatus(): AVPlayerTimeControlStatus {}
 

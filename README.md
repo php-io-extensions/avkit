@@ -1,9 +1,9 @@
 # avkit
 
 [![CI](https://img.shields.io/github/actions/workflow/status/php-io-extensions/avkit/ci.yml?style=flat-square&label=CI)](https://github.com/php-io-extensions/avkit/actions/workflows/ci.yml)
-[![AVFoundation API](https://img.shields.io/badge/AVFoundation_API-3.0%25_%2879%2F2658%29-blue?style=flat-square)](SUPPORT.md)
+[![AVFoundation API](https://img.shields.io/badge/AVFoundation_API-3.5%25_%2892%2F2658%29-blue?style=flat-square)](SUPPORT.md)
 
-1:1 PHP bindings of AVFoundation, AVKit, CoreMedia and CoreVideo, as classes and functions named after their native counterparts. Version 0.11.2. macOS only.
+1:1 PHP bindings of AVFoundation, AVFAudio, AVKit, CoreMedia and CoreVideo, as classes and functions named after their native counterparts. Version 0.11.2. macOS only.
 
 A handle is one PHP object per native object, retained while PHP holds it. Requires ext-appkit 0.11.2: avkit's classes are appkit objects, `AVPlayerView` is an appkit `NSView`, and an `NSURL`, `NSError`, `CGSize` or `CFTypeRef` is appkit's `NSURL`, `NSError`, `NSSize` or `CFType`. An `NSException` becomes appkit's `AppKitException`.
 

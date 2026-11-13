@@ -4,7 +4,7 @@ okf_version: "0.2"
 
 # ext-avkit
 
-1:1 PHP bindings of AVFoundation, AVKit, CoreMedia and CoreVideo, on ext-appkit's object model. Version 0.11.2. macOS only.
+1:1 PHP bindings of AVFoundation, AVFAudio, AVKit, CoreMedia and CoreVideo, on ext-appkit's object model. Version 0.11.2. macOS only.
 
 # API
 

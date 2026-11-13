@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: f51876fc3c1978804016ecaab023078f5c536445 */
+ * Stub hash: d7125670959a3aaa98d9bf3e4e23d97b9ec89e0f */
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_AVAsset_duration, 0, 0, CMTime, 0)
 ZEND_END_ARG_INFO()
@@ -100,6 +100,45 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_AVPlayerItem_error arginfo_class_AVAssetReader_error
 
+#define arginfo_class_AVPlayerItem_outputs arginfo_class_AVAsset_tracks
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayerItem_addOutput, 0, 1, IS_VOID, 0)
+	ZEND_ARG_OBJ_INFO(0, output, AVPlayerItemOutput, 0)
+ZEND_END_ARG_INFO()
+
+#define arginfo_class_AVPlayerItem_removeOutput arginfo_class_AVPlayerItem_addOutput
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_AVPlayerItemOutput_itemTimeForHostTime, 0, 1, CMTime, 0)
+	ZEND_ARG_TYPE_INFO(0, hostTimeInSeconds, IS_DOUBLE, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_AVPlayerItemOutput_itemTimeForMachAbsoluteTime, 0, 1, CMTime, 0)
+	ZEND_ARG_TYPE_INFO(0, machAbsoluteTime, IS_LONG, 0)
+ZEND_END_ARG_INFO()
+
+#define arginfo_class_AVPlayerItemOutput_suppressesPlayerRendering arginfo_class_AVAssetReaderOutput_alwaysCopiesSampleData
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayerItemOutput_setSuppressesPlayerRendering, 0, 1, IS_VOID, 0)
+	ZEND_ARG_TYPE_INFO(0, suppressesPlayerRendering, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayerItemVideoOutput_initWithPixelBufferAttributes, 0, 1, IS_STATIC, 0)
+	ZEND_ARG_TYPE_INFO(0, pixelBufferAttributes, IS_ARRAY, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayerItemVideoOutput_initWithOutputSettings, 0, 1, IS_STATIC, 0)
+	ZEND_ARG_TYPE_INFO(0, outputSettings, IS_ARRAY, 1)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayerItemVideoOutput_hasNewPixelBufferForItemTime, 0, 1, _IS_BOOL, 0)
+	ZEND_ARG_OBJ_INFO(0, itemTime, CMTime, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_AVPlayerItemVideoOutput_copyPixelBufferForItemTimeItemTimeForDisplay, 0, 1, CVPixelBuffer, 1)
+	ZEND_ARG_OBJ_INFO(0, itemTime, CMTime, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(1, outItemTimeForDisplay, CMTime, 1, "null")
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayer_playerWithPlayerItem, 0, 1, IS_STATIC, 0)
 	ZEND_ARG_OBJ_INFO(0, item, AVPlayerItem, 1)
 ZEND_END_ARG_INFO()
@@ -124,6 +163,12 @@ ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayer_setMuted, 0, 1, IS_VOID, 0)
 	ZEND_ARG_TYPE_INFO(0, muted, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
+
+#define arginfo_class_AVPlayer_volume arginfo_class_AVAssetTrack_nominalFrameRate
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_AVPlayer_setVolume, 0, 1, IS_VOID, 0)
+	ZEND_ARG_TYPE_INFO(0, volume, IS_DOUBLE, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_OBJ_INFO_EX(arginfo_class_AVPlayer_timeControlStatus, 0, 0, AVPlayerTimeControlStatus, 0)
@@ -174,6 +219,17 @@ ZEND_METHOD(AVPlayerItem, playerItemWithURL);
 ZEND_METHOD(AVPlayerItem, status);
 ZEND_METHOD(AVPlayerItem, duration);
 ZEND_METHOD(AVPlayerItem, error);
+ZEND_METHOD(AVPlayerItem, outputs);
+ZEND_METHOD(AVPlayerItem, addOutput);
+ZEND_METHOD(AVPlayerItem, removeOutput);
+ZEND_METHOD(AVPlayerItemOutput, itemTimeForHostTime);
+ZEND_METHOD(AVPlayerItemOutput, itemTimeForMachAbsoluteTime);
+ZEND_METHOD(AVPlayerItemOutput, suppressesPlayerRendering);
+ZEND_METHOD(AVPlayerItemOutput, setSuppressesPlayerRendering);
+ZEND_METHOD(AVPlayerItemVideoOutput, initWithPixelBufferAttributes);
+ZEND_METHOD(AVPlayerItemVideoOutput, initWithOutputSettings);
+ZEND_METHOD(AVPlayerItemVideoOutput, hasNewPixelBufferForItemTime);
+ZEND_METHOD(AVPlayerItemVideoOutput, copyPixelBufferForItemTimeItemTimeForDisplay);
 ZEND_METHOD(AVPlayer, playerWithPlayerItem);
 ZEND_METHOD(AVPlayer, play);
 ZEND_METHOD(AVPlayer, pause);
@@ -183,6 +239,8 @@ ZEND_METHOD(AVPlayer, currentTime);
 ZEND_METHOD(AVPlayer, seekToTime);
 ZEND_METHOD(AVPlayer, isMuted);
 ZEND_METHOD(AVPlayer, setMuted);
+ZEND_METHOD(AVPlayer, volume);
+ZEND_METHOD(AVPlayer, setVolume);
 ZEND_METHOD(AVPlayer, timeControlStatus);
 ZEND_METHOD(AVPlayer, actionAtItemEnd);
 ZEND_METHOD(AVPlayer, setActionAtItemEnd);
@@ -245,6 +303,25 @@ static const zend_function_entry class_AVPlayerItem_methods[] = {
 	ZEND_ME(AVPlayerItem, status, arginfo_class_AVPlayerItem_status, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayerItem, duration, arginfo_class_AVPlayerItem_duration, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayerItem, error, arginfo_class_AVPlayerItem_error, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItem, outputs, arginfo_class_AVPlayerItem_outputs, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItem, addOutput, arginfo_class_AVPlayerItem_addOutput, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItem, removeOutput, arginfo_class_AVPlayerItem_removeOutput, ZEND_ACC_PUBLIC)
+	ZEND_FE_END
+};
+
+static const zend_function_entry class_AVPlayerItemOutput_methods[] = {
+	ZEND_ME(AVPlayerItemOutput, itemTimeForHostTime, arginfo_class_AVPlayerItemOutput_itemTimeForHostTime, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItemOutput, itemTimeForMachAbsoluteTime, arginfo_class_AVPlayerItemOutput_itemTimeForMachAbsoluteTime, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItemOutput, suppressesPlayerRendering, arginfo_class_AVPlayerItemOutput_suppressesPlayerRendering, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItemOutput, setSuppressesPlayerRendering, arginfo_class_AVPlayerItemOutput_setSuppressesPlayerRendering, ZEND_ACC_PUBLIC)
+	ZEND_FE_END
+};
+
+static const zend_function_entry class_AVPlayerItemVideoOutput_methods[] = {
+	ZEND_ME(AVPlayerItemVideoOutput, initWithPixelBufferAttributes, arginfo_class_AVPlayerItemVideoOutput_initWithPixelBufferAttributes, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(AVPlayerItemVideoOutput, initWithOutputSettings, arginfo_class_AVPlayerItemVideoOutput_initWithOutputSettings, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	ZEND_ME(AVPlayerItemVideoOutput, hasNewPixelBufferForItemTime, arginfo_class_AVPlayerItemVideoOutput_hasNewPixelBufferForItemTime, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayerItemVideoOutput, copyPixelBufferForItemTimeItemTimeForDisplay, arginfo_class_AVPlayerItemVideoOutput_copyPixelBufferForItemTimeItemTimeForDisplay, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
 
@@ -258,6 +335,8 @@ static const zend_function_entry class_AVPlayer_methods[] = {
 	ZEND_ME(AVPlayer, seekToTime, arginfo_class_AVPlayer_seekToTime, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayer, isMuted, arginfo_class_AVPlayer_isMuted, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayer, setMuted, arginfo_class_AVPlayer_setMuted, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayer, volume, arginfo_class_AVPlayer_volume, ZEND_ACC_PUBLIC)
+	ZEND_ME(AVPlayer, setVolume, arginfo_class_AVPlayer_setVolume, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayer, timeControlStatus, arginfo_class_AVPlayer_timeControlStatus, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayer, actionAtItemEnd, arginfo_class_AVPlayer_actionAtItemEnd, ZEND_ACC_PUBLIC)
 	ZEND_ME(AVPlayer, setActionAtItemEnd, arginfo_class_AVPlayer_setActionAtItemEnd, ZEND_ACC_PUBLIC)
@@ -279,6 +358,10 @@ static void register_AVFoundation_symbols(int module_number)
 	REGISTER_STRING_CONSTANT("AVLinearPCMIsBigEndianKey", appkit_cfstring_constant((CFStringRef) AVLinearPCMIsBigEndianKey), CONST_PERSISTENT);
 	REGISTER_STRING_CONSTANT("AVLinearPCMIsNonInterleaved", appkit_cfstring_constant((CFStringRef) AVLinearPCMIsNonInterleaved), CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("kAudioFormatLinearPCM", kAudioFormatLinearPCM, CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("kAudioFormatFlagIsFloat", kAudioFormatFlagIsFloat, CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("kAudioFormatFlagIsSignedInteger", kAudioFormatFlagIsSignedInteger, CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("kAudioFormatFlagIsPacked", kAudioFormatFlagIsPacked, CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("kAudioFormatFlagIsNonInterleaved", kAudioFormatFlagIsNonInterleaved, CONST_PERSISTENT);
 }
 
 static zend_class_entry *register_class_AVAsset(zend_class_entry *class_entry_NSObject)
@@ -393,6 +476,26 @@ static zend_class_entry *register_class_AVPlayerItem(zend_class_entry *class_ent
 
 	INIT_CLASS_ENTRY(ce, "AVPlayerItem", class_AVPlayerItem_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_NSObject, ZEND_ACC_NOT_SERIALIZABLE);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_AVPlayerItemOutput(zend_class_entry *class_entry_NSObject)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_CLASS_ENTRY(ce, "AVPlayerItemOutput", class_AVPlayerItemOutput_methods);
+	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_NSObject, ZEND_ACC_NOT_SERIALIZABLE);
+
+	return class_entry;
+}
+
+static zend_class_entry *register_class_AVPlayerItemVideoOutput(zend_class_entry *class_entry_AVPlayerItemOutput)
+{
+	zend_class_entry ce, *class_entry;
+
+	INIT_CLASS_ENTRY(ce, "AVPlayerItemVideoOutput", class_AVPlayerItemVideoOutput_methods);
+	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_AVPlayerItemOutput, ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
 }
